@@ -1,0 +1,118 @@
+#include<stdio.h>
+#include<conio.h>
+#include<alloc.h>
+
+struct treenode
+{
+	int data;
+	struct treenode *left,*right;
+};
+struct treenode* newnode(int data)
+{
+	struct treenode *newnode;
+	newnode=(struct treenode *)malloc(sizeof(struct treenode));
+	newnode->data=data;
+	newnode->left=NULL;
+	newnode->right=NULL;
+	return newnode;
+}
+
+int mirror(struct treenode *root1,struct treenode **root2)
+{
+	if(!root1)
+		return 0;
+	if(root1->left)
+		(*root2)->right=newnode(root1->left->data);
+	if(root1->right)
+		(*root2)->left=newnode(root1->right->data);
+	mirror(root1->left,&((*root2)->right));
+	mirror(root1->right,&((*root2)->left));
+}
+
+int insert(struct treenode **root,struct treenode *newnode)
+{
+	if(!(*root))
+	{
+		*root=newnode;
+		return 1;
+	}
+	if(newnode->data < (*root)->data)
+		return insert(&((*root)->left),newnode);
+	else if(newnode->data > (*root)->data)
+		return insert(&((*root)->right),newnode);
+	else
+	{
+		printf("duplicates insertion");
+		return 0;
+	}
+}
+
+void inorder(struct treenode *root)
+{
+	if(root)
+	{
+		inorder(root->left);
+		printf("%d->",root->data);
+		inorder(root->right);
+	}
+
+}
+void preorder(struct treenode *root)
+{
+	if(root)
+	{
+
+		printf("%d->",root->data);
+		preorder(root->left);
+		preorder(root->right);
+	}
+
+}
+void postorder(struct treenode *root)
+{
+	if(root)
+	{
+
+
+		postorder(root->left);
+		postorder(root->right);
+		printf("%d->",root->data);
+	}
+
+}
+
+void main()
+{
+	struct treenode *root1=NULL,*root2=NULL;
+	int n,data,i;
+	clrscr();
+	printf("enter how many nodes to be inserted\n");
+	scanf("%d",&n);
+	for(i=0;i<n;i++)
+	{
+		printf("enter the data to be inserted\n");
+		scanf("%d",&data);
+		insert(&root1,newnode(data));
+	}
+	root2=newnode(root1->data);
+	printf("inorder of the actual tree\n");
+	inorder(root1);
+	printf("\n");
+	printf("postorder of the actual tree\n");
+	postorder(root1);
+	printf("\n");
+	printf("preorder of the actual tree\n");
+	preorder(root1);
+	printf("\n");
+	mirror(root1,&root2);
+	printf("inorder of the mirrored tree\n");
+	inorder(root2);
+	printf("\n");
+	printf("postorder of the mirrored tree\n");
+	postorder(root2);
+	printf("\n");
+	printf("preorder of the mirrored tree\n");
+	preorder(root2);
+	printf("\n");
+	getch();
+}
